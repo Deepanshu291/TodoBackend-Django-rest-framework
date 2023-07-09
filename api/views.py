@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import viewsets , status ,filters
+from rest_framework import viewsets , status ,filters , generics
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from api.models import *
@@ -12,9 +12,24 @@ from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 
+class ListTodoView(generics.ListCreateAPIView):
+    authentication_classes = [JWTAuthentication,SessionAuthentication,BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser,FormParser,JSONParser)
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+
+class DetailTodoView(generics.RetrieveUpdateDestroyAPIView):
+    authentication_classes = [JWTAuthentication,SessionAuthentication,BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser,FormParser,JSONParser)
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+
+
 
 class TodoViewSet(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication,SessionAuthentication,BasicAuthentication]
     permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser,FormParser,JSONParser)
     serializers = TodoSerializer
@@ -31,7 +46,7 @@ class TodoViewSet(APIView):
             'data': serializers.data
         })
         
-    
+
     def post(self,request, *args, **kwargs):
         try:
             user = request.user
