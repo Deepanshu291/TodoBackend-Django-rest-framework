@@ -46,19 +46,4 @@ class TodoView(viewsets.ModelViewSet):
         print(ser.errors)
         ser.save()
         return super().update(request, *args, **kwargs)
-        # serializer = TodoSerializer(data=data)
-
-        # if not serializers.is_valid():
-        #         return Response({
-        #             'status':400,
-        #             'message': 'invalid fields',
-        #             'data': serializer.data
-        #         })
-        
-        # serializer.save()
-        # return  Response({
-        #         'status': 200,
-        #         'message':'Todo is Created succesfully',
-        #         'data': serializer.data,
-                
-        #     })
+     
