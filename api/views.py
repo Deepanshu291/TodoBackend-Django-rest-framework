@@ -13,46 +13,96 @@ from rest_framework.permissions import IsAuthenticated
 
 
 
-class TodoView(viewsets.ModelViewSet):
-    queryset = Todo.objects.all()
-    serializer_class = TodoSerializer
-    authentication_classes = [JWTAuthentication, SessionAuthentication , BasicAuthentication]
+class TodoViewSet(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser,FormParser,JSONParser)
-    search_fields= ['title','desc']
-    filter_backends = (filters.SearchFilter,)
+    serializers = TodoSerializer
 
-    def get_queryset(self):
-        user = self.request.user
-        query = Todo.objects.filter(user=user)
-        return query
-    
-
-    def create(self, request, *args, **kwargs):
-
+    def get(self,request):
         user = request.user
-        data =request.data
-        data['user'] = user.id
-        ser = self.serializer_class(data=data)
-        ser.is_valid()
-        print(ser.error_messages)
-        return super().create(request, *args, **kwargs)
+        print(user)
+        query = Todo.objects.filter(user=self.request.user)
+      
+        serializers = TodoSerializer(query, many=True)
+        return Response({
+            'status':200,
+            'message': 'Success',
+            'data': serializers.data
+        })
+        
     
-    def update(self, request, *args, **kwargs):
-        data = request.data 
-        instance = self.get_object()
-        ser = self.get_serializer(instance , data= data, partial=True)
-        ser.is_valid(raise_exception = True)
-        print(ser.errors)
-        ser.save()
-        return super().update(request, *args, **kwargs)
-        # serializer = TodoSerializer(data=data)
+    def post(self,request, *args, **kwargs):
+        try:
+            user = request.user
+            data = request.data 
+            data['user'] = user.id
+            serializer = TodoSerializer(data=data,)
 
+            if not serializer.is_valid():
+                return Response({
+                    'status':400,
+                    'message': 'invalid fields',
+                    'data': serializer.data
+                })
+            
+            serializer.save()
+
+            return Response({
+                'status': 200,
+                'message':'Todo is Created succesfully',
+                'data': serializer.data,
+                
+            })
+        except:
+            print("")
+    
+    def patch(self, request,pk):
+        try:
+            data = request.data 
+            if not data.get('uuid'):
+                return Response(
+                    data={},
+                    status=status.status.HTTP_200_OK
+                )
+            obj = Todo.objects.filter(uuid=pk)
+            if not obj.exists():
+                return Response(
+                    status=status.HTTP_204_NO_CONTENT,
+                    data= {}
+                )
+            serializer = TodoSerializer(obj[0] , data=data, partial=True)
+            if not serializer.is_valid():
+                return Response({
+                    'status':400,
+                    'message': 'invalid fields',
+                    'data': serializer.data
+                })
+            
+            serializer.save()
+
+            return Response({
+                'status': 200,
+                'message':'Todo is Created succesfully',
+                'data': serializer.data,
+                
+            })
+        except Exception as e:
+            print(e)
+        # user = self.request.user
+        # data = request.data 
+        # print(user)
+        # data['user'] = user.id 
+        # serializer = TodoSerializer(data=data)
+        # # ser = self.serializers(data=data)
+        # # ser.is_valid()
+        # # print(ser.error_messages)
+        # # return super().create(request, *args, **kwargs )
         # if not serializers.is_valid():
         #         return Response({
         #             'status':400,
         #             'message': 'invalid fields',
-        #             'data': serializer.data
+        #             'data': {}
         #         })
         
         # serializer.save()
@@ -62,3 +112,5 @@ class TodoView(viewsets.ModelViewSet):
         #         'data': serializer.data,
                 
         #     })
+
+        
