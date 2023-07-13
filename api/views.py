@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets , status ,filters, generics
@@ -8,10 +9,54 @@ from api.serializer import *
 from rest_framework.authentication import SessionAuthentication , BasicAuthentication 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
+class RegisterView(generics.GenericAPIView):
+    def post(self, request):
+        serializer =UserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
+class LoginView(generics.GenericAPIView):
+    def post(self, request):
+        username = request.data['username']
+        password = request.data['password']
+        print(username,password)
+        user = User.objects.filter(username=username).first()
+        if user is None:
+            raise AuthenticationFailed('User not Found')
+        
+        if not user.check_password(password):
+            raise AuthenticationFailed('Incorrect Password :(')
+        
+        payload ={
+            'id':user.id,
+            'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+            'iat':datetime.datetime.utcnow()
+        }
+
+        user = authenticate(username=username,password=password)
+        if user is not None:
+            login(request,user=user)
+            print("user is here ")
+        
+        print(request.user)
+        refresh = RefreshToken.for_user(user=user)
+        return Response({
+            'message': 'login successful',
+            'refresh':str(refresh),
+            'access':str(refresh.access_token)
+        })
+
+@api_view(["GET"])
+def logOutUser(request):
+    logout(request)
+    return Response({
+        "logout": "success"
+    })
 
 class TodoView(viewsets.ModelViewSet):
     queryset = Todo.objects.all()
@@ -50,49 +95,3 @@ class TodoView(viewsets.ModelViewSet):
         ser.save()
         return super().update(request, *args, **kwargs)
     
-# class RegisterUserView(generics.GenericAPIView):
-#     serializer_class = RegisterUser
-
-#     def post(self, request,*args, **kwargs):
-#         serializer = self.get_serializer(data= request.data)
-#         serializer.is_valid(raise_exception= True)
-#         user = serializer.save()
-#         return Response({
-#             "user": UserSerializer(user,context = self.get_serializer_context()).data
-#         })
-    
-# class LoginUserView(generics.GenericAPIView):
-#     serializer_class = LoginUserSer 
-#     def post(self, request,*args, **kwargs):
-#         serializer = self.get_serializer(data= request.data)
-#         if not serializer.is_valid():
-#             # messages.warning(request,"invalid username,password")
-#             return Response({
-#                 "error":"invalid username password"
-#             }, status=status.HTTP_400_BAD_REQUEST)
-#         else:
-#             user = serializer.validated_data
-#             login(request,user)
-#             return Response({
-#             "user": UserSerializer(user,context = self.get_serializer_context()).data
-#             })
-
-@api_view(['POST'])
-def login(reques):
-    return Response()
-
-
-@api_view(['POST'])
-def signup(request):
-    serializer =UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        user = User.object.get(username = request.data['username'])
-    return Response()
-
-@api_view(["POST"])
-def logOutUser(request):
-    logout(request)
-    return Response({
-        "Logout":"success"
-    }, status=status.HTTP_202_ACCEPTED)

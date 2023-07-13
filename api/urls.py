@@ -9,8 +9,8 @@ urlpatterns = [
     #  path("todo/", todo, name="todo"),
      path("auth/",include('rest_framework.urls'), name="auth"),
      path('', include(router.urls)),
-    #  path('register/', RegisterUserView.as_view()),
-    #  path('login/', LoginUserView.as_view()),
+     path('register/', RegisterView.as_view()),
+     path('login/', LoginView.as_view()),
      path('logout/', logOutUser)
     #  path("todo/", TodoViewSet.as_view()) 
 ]
