@@ -59,6 +59,8 @@ def logOutUser(request):
     },
     status=status.HTTP_202_ACCEPTED)
 
+
+#use ModelViewset for CRUD but i do some tweaks in there  
 class TodoView(viewsets.ModelViewSet):
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
@@ -68,17 +70,18 @@ class TodoView(viewsets.ModelViewSet):
     search_fields= ['title','desc']
     filter_backends = (filters.SearchFilter,)
 
+    #when a post request perform then it save user in todo model class
     def perform_create(self, serializer):
         serializer.save(user= self.request.user)
 
+    # when a get request perform then it return All Todo data..
     def get_queryset(self):
         user = self.request.user
-        query = Todo.objects.filter(user=user)
+        query = Todo.objects.filter(user=user) #here use user to get only current user Todo list 
         return query
     
-
+    # it used to Create new Todo in Database
     def create(self, request, *args, **kwargs):
-
         user = request.user
         data =request.data
         data['user'] = user.id
@@ -87,6 +90,7 @@ class TodoView(viewsets.ModelViewSet):
         print(ser.error_messages)
         return super().create(request, *args, **kwargs)
     
+    # it for patch request and for update Todo in Database 
     def update(self, request, *args, **kwargs):
         data = request.data 
         instance = self.get_object()
@@ -95,4 +99,6 @@ class TodoView(viewsets.ModelViewSet):
         print(ser.errors)
         ser.save()
         return super().update(request, *args, **kwargs)
+    
+    #And delete request is by default from ModelViewSet.... 
     

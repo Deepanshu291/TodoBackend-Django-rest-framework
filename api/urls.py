@@ -2,17 +2,14 @@ from django.urls import path, include
 from .views import *
 from rest_framework import routers
 
-router = routers.DefaultRouter()
-router.register(r'todo', TodoView)
+router = routers.DefaultRouter() #use router which is come from rest_framework 
+router.register(r'todo', TodoView) #regiter todoView in router 
 
 urlpatterns = [
-    #  path("todo/", todo, name="todo"),
-     path("auth/",include('rest_framework.urls'), name="auth"),
      path('', include(router.urls)),
-     path('register/', RegisterView.as_view()),
-     path('login/', LoginView.as_view()),
-     path('logout/', logOutUser)
-    #  path("todo/", TodoViewSet.as_view()) 
+     path('register/', RegisterView.as_view()), # create register router link from RegisterView
+     path('login/', LoginView.as_view()), # create Login router link from LoginView
+     path('logout/', logOutUser)  # create Logout router link from LogoutView
 ]
 
 

@@ -130,6 +130,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+#this is for a basic settings for Jwt token as for custom access token time and refresh-token time and many more
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
@@ -169,6 +171,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
+#this is for cors method as dont get any cors error in client side 
 CORS_ALLOW_METHODS = (
     "DELETE",
     "GET",
@@ -181,11 +184,13 @@ CORS_ALLOW_METHODS = (
 CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
-    
+    #this is for JWTAuth and generate Jwt Token
     'DEFAULT_AUTHENTICATION_CLASSES': (
         
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+
+    #this is for Defult Permission class as IsAuthenticated as if user is not authenticate then non other request perform 
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
