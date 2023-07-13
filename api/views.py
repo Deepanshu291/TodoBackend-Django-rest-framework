@@ -1,7 +1,7 @@
 import datetime
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import viewsets , status ,filters, generics
+from rest_framework import viewsets , status ,filters, generics,views
 from rest_framework.decorators import api_view
 from api.models import *
 from rest_framework.parsers import MultiPartParser, FormParser , JSONParser
@@ -14,7 +14,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.exceptions import *
 # Create your views here.
 
-class RegisterView(generics.GenericAPIView):
+class RegisterView(views.APIView):
+    authentication_classes = []
+    permission_classes = []
     def post(self, request):
         serializer =UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -22,6 +24,8 @@ class RegisterView(generics.GenericAPIView):
         return Response(serializer.data)
 
 class LoginView(generics.GenericAPIView):
+    authentication_classes = []
+    permission_classes = []
     def post(self, request):
         username = request.data['username']
         password = request.data['password']
@@ -33,12 +37,6 @@ class LoginView(generics.GenericAPIView):
         if not user.check_password(password):
             raise AuthenticationFailed('Incorrect Password :(')
         
-        # payload ={
-        #     'id':user.id,
-        #     'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-        #     'iat':datetime.datetime.utcnow()
-        # }
-
         user = authenticate(username=username,password=password)
         if user is not None:
             login(request,user=user)
