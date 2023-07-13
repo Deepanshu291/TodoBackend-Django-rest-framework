@@ -11,6 +11,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import login, logout, authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.exceptions import *
 # Create your views here.
 
 class RegisterView(generics.GenericAPIView):
@@ -32,11 +33,11 @@ class LoginView(generics.GenericAPIView):
         if not user.check_password(password):
             raise AuthenticationFailed('Incorrect Password :(')
         
-        payload ={
-            'id':user.id,
-            'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat':datetime.datetime.utcnow()
-        }
+        # payload ={
+        #     'id':user.id,
+        #     'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+        #     'iat':datetime.datetime.utcnow()
+        # }
 
         user = authenticate(username=username,password=password)
         if user is not None:
