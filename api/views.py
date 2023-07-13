@@ -1,5 +1,4 @@
-import datetime
-from django.shortcuts import render
+
 from rest_framework.response import Response
 from rest_framework import viewsets , status ,filters, generics,views
 from rest_framework.decorators import api_view
@@ -21,7 +20,7 @@ class RegisterView(views.APIView):
         serializer =UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
 
 class LoginView(generics.GenericAPIView):
     authentication_classes = []
@@ -48,14 +47,17 @@ class LoginView(generics.GenericAPIView):
             'message': 'login successful',
             'refresh':str(refresh),
             'access':str(refresh.access_token)
-        })
+        },
+        status=status.HTTP_202_ACCEPTED
+        )
 
 @api_view(["GET"])
 def logOutUser(request):
     logout(request)
     return Response({
         "logout": "success"
-    })
+    },
+    status=status.HTTP_202_ACCEPTED)
 
 class TodoView(viewsets.ModelViewSet):
     queryset = Todo.objects.all()
