@@ -10,6 +10,36 @@
 ![jwt](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
 ![postgresql](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
+## Todofrontend 
+![react](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+```
+
+  it is a React project where its use this todo api as backend 
+  here is todo frontend build in react+typescript 
+
+  https://todoreactts.netlify.app/
+```
+## Demo
+
+You can login and use Todo-api from [this link]("https://todoapi29.pythonanywhere.com/")
+
+server-side: https://todoapi29.pythonanywhere.com/
+
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green)
+ ![SqlLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
+![drf](https://img.shields.io/badge/django%20rest-ff1709?style=for-the-badge&logo=django&logoColor=white)
+
+client-side: https://todoreactts.netlify.app/ 
+ 
+ ![react](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![typescript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+
+loom link : https://www.loom.com/share/d0ee3c558f7b421ca3b0d058a2e692f6?sid=bc659290-fd53-417c-8b19-bc1e974edcfb
+
+
+
+#### username : deepanshu 
+#### password : 1234
+   
 
 
 📌 However, in general, a "todo" application typically refers to a task management system where users can create, update, and manage their tasks or to-do lists. It allows users to add tasks, set due dates, mark tasks as completed, and potentially categorize or prioritize tasks.
@@ -52,12 +82,7 @@ Run Project
 - Use Custom Input 
 
 
-## Demo
-
-You can login and use Todo-api from [this link]("https://todoapi29.pythonanywhere.com/") https://todoapi29.pythonanywhere.com/
-
-#### username : deepanshu 
-#### password : 1234
+# Request
 
 ### To perform GET, POST Request
 ```
